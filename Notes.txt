@@ -1,0 +1,26 @@
+Safety Stock Optimization
+
+- The 'df_merged' dataframe has 59M rows and 14 columns( including the addition of event_type1,2 and event_name_1,2 from calendar.csv for seasonality modeling). It is very difficult for a 
+  tradition ML model to handle 59M rows. To be frank for predicting 2 non-complex variables, 59M is a lot. So for the sake of compute and time, I tried to reduce the data of 10 stores
+  in 3 states (59M records) to just 1 store per state (3/10 stores).
+- I was in a dilemma to go with either 1 store per state to all stores of any 1 state. But then I realized the goal of the ML (and even project) is to predict the std dev of demand and 
+  lead time (rather than relying of historical data) but not predicting the demand of stores in a state. So the conclusion was to have a diversified data in order to get generalized
+  predictions from the ML model. Hence, going with 1 store per state was a better choice as it accounts for demands, seasonality, trends, etc. of different states instead of just 1 state.  
+- But another question raised. Will the data of 1 store per state be enough to understand or make generalized predictions of it's state? Tbh, we had 59M records of 10 stores over a period
+  of 5.3 years approx. and when you reduce it down to 3 stores from 10 (from 59M records), you would still have enough data (probably in millions) for ML model to train and understand. But,
+  can that 1 store from the state represent or generalize for other stores in the state? May be or may be not, because, the selected store can be in suburbs, the demographics of its
+  locality can be different, a store beside Costco behaves differently than a store operating elsewhere, etc. It is difficult to pick a store unless we have all kinds of supporting data.  
+  Therefore, I decided to select a store from each state by using the info we had at hand (demand data).
+- I aggregated the demand of each store in each state. The metrics I used were 'total demand' and 'zero demand %'. Total demand is basically the sum of all its sales/demand records of
+  each day and zero demand % is basically, the % where there was no demand in that store during the total time (5.3 years approx). Here, having the zero demand % metric is important than 
+  using count() of all zero rows in the demand column because, the count() does not justify the metric when lets say, 1 store having record of 5 years and another for just 3 years.
+- Total demand represented the its sales/demand (so store with higher demand is better for training) and store with lower zero demand % was better as it represented less no of days where
+  there was no demand/sale. Having more info on demand/sale is helpful of an ML model to understand the variations rather than having its analysis being impaired by too many 0 demand days.
+- The most important step was to chose the store from each state. A store can have highest demand in not lowest zero demand % in the state. Then how do you chose a best store? This is a 
+  typical DS tradeoff (along the lines of quantity vs quality). My choice was to prioritize store with highest total demand; here's why:
+  1) The signal-to-noise ratio: A high-volume/demand store provides a much stronger "signal" for the model to learn from. Even if it has slightly more zero-demand weeks, the weeks where 
+     it does have sales provide significant data points. A low-volume/demand store might have fewer zeros, but the sales it does have are often small (example, selling 1 or 2 units), which
+     makes it harder for the ML model to distinguish between a "trend" and "random luck." 
+  2) Economic impact: Since the goal of the project is "safet stock optimization", optimizing a store with high demand (which usually has more inventory) is beneficial to the company as it 
+     saves more money. Reducing the holding cost at a store with high demand is more valuable that store with low demand.
+- So the hierarchy is highest total demand, then zero demand %.
