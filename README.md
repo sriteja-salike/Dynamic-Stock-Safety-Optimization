@@ -122,30 +122,6 @@ Crossover point per SKU: `σ_d_crossover = d̄ × σ_L / √L̄`
 
 ---
 
-## Repository Structure
-
-```
-├── notebooks/
-│   ├── 01_data_acquisition.ipynb
-│   ├── 02_weekly_aggregation.ipynb
-│   ├── 03_lead_time_simulation.ipynb
-│   ├── 04_feature_engineering.ipynb
-│   ├── 05_demand_model.ipynb
-│   ├── 06_lead_time_model.ipynb
-│   ├── 07_static_baseline.ipynb
-│   ├── 08_dynamic_ss.ipynb
-│   └── 09_results_analysis.ipynb
-├── models/
-│   └── model_demand_std.pkl
-├── data/
-│   └── sku_stats_final.parquet
-├── outputs/
-│   └── results_dashboard.png
-└── README.md
-```
-
----
-
 ## Dependencies
 
 ```
